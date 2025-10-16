@@ -1,6 +1,6 @@
 {
-  "name": "@editorjs/list", 
-  "version": "2.0.8",
+  "name": "@chrisprobably/editorjs-list",
+  "version": "2.0.9",
   "keywords": [
     "codex editor",
     "list",
@@ -8,8 +8,8 @@
     "editorjs"
   ],
   "description": "List Tool for EditorJS",
-  "repository": "https://github.com/editor-js/list.git",
-  "author": "CodeX <team@codex.so>",
+  "repository": "https://github.com/chrisprobably/editorjs-list.git",
+  "author": "ChrisProbably",
   "license": "MIT",
   "files": [
     "dist"
@@ -31,11 +31,11 @@
     "lint:fix": "eslint --fix"
   },
   "devDependencies": {
+    "@editorjs/caret": "^1.0.3",
+    "@editorjs/dom": "^1.0.1",
     "@editorjs/editorjs": "^2.31.0-rc.2",
     "@typescript-eslint/eslint-plugin": "^7.13.1",
     "@typescript-eslint/parser": "^7.13.1",
-    "@editorjs/caret": "^1.0.3",
-    "@editorjs/dom": "^1.0.1",
     "eslint": "^9.2.0",
     "eslint-config-codex": "^2.0.0",
     "eslint-import-resolver-alias": "1.1.2",
