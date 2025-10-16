@@ -1,24 +1,40 @@
-import type { API, BlockAPI, PasteConfig, ToolboxConfig } from '@editorjs/editorjs';
+import type {
+  API,
+  BlockAPI,
+  PasteConfig,
+  ToolboxConfig
+} from '@editorjs/editorjs';
 import type {
   BlockToolConstructorOptions,
   MenuConfigItem,
   ToolConfig
 } from '@editorjs/editorjs/types/tools';
-import { IconListBulleted, IconListNumbered, IconChecklist } from '@codexteam/icons';
-import { IconStartWith } from './styles/icons/index.js';
-import type { ListConfig, ListData, ListDataStyle, ListItem, OldListData } from './types/ListParams';
+import {
+  IconListBulleted,
+  IconListNumbered,
+  IconChecklist
+} from '@codexteam/icons';
+import type {
+  ListConfig,
+  ListData,
+  ListDataStyle,
+  ListItem,
+  OldListData
+} from './types/ListParams';
 import ListTabulator from './ListTabulator';
-import { CheckListRenderer, OrderedListRenderer, UnorderedListRenderer } from './ListRenderer';
+import {
+  CheckListRenderer,
+  OrderedListRenderer,
+  UnorderedListRenderer
+} from './ListRenderer';
 import type { ListRenderer } from './types/ListRenderer';
-import { renderToolboxInput } from './utils/renderToolboxInput';
-import { OlCounterIconsMap, type OlCounterType, OlCounterTypesMap } from './types/OlCounterType';
+import { type OlCounterType, OlCounterTypesMap } from './types/OlCounterType';
 
 /**
  * Build styles
  */
 import './styles/list.pcss';
 import './styles/input.pcss';
-import stripNumbers from './utils/stripNumbers';
 import normalizeData from './utils/normalizeData';
 import type { PasteEvent } from './types';
 import type { OrderedListItemMeta } from './types/ItemMeta';
@@ -26,7 +42,10 @@ import type { OrderedListItemMeta } from './types/ItemMeta';
 /**
  * Constructor Params for Editorjs List Tool, use to pass initial data and settings
  */
-export type ListParams = BlockToolConstructorOptions<ListData | OldListData, ListConfig>;
+export type ListParams = BlockToolConstructorOptions<
+  ListData | OldListData,
+  ListConfig
+>;
 
 /**
  * Default class of the component used in editor
@@ -119,7 +138,10 @@ export default class EditorjsList {
               items: [],
             },
           ],
-          style: config?.defaultStyle !== undefined ? config.defaultStyle : 'unordered',
+          style:
+            config?.defaultStyle !== undefined
+              ? config.defaultStyle
+              : 'unordered',
         };
       },
     };
@@ -218,7 +240,9 @@ export default class EditorjsList {
     /**
      * Set the default counter types for the ordered list
      */
-    this.defaultCounterTypes = (this.config as ListConfig).counterTypes || Array.from(OlCounterTypesMap.values()) as OlCounterType[];
+    this.defaultCounterTypes
+      = (this.config as ListConfig).counterTypes
+      || (Array.from(OlCounterTypesMap.values()) as OlCounterType[]);
 
     const initialData = {
       style: this.defaultListStyle,
@@ -231,7 +255,10 @@ export default class EditorjsList {
     /**
      * Assign default value of the property for the ordered list
      */
-    if (this.listStyle === 'ordered' && (this.data.meta as OrderedListItemMeta).counterType === undefined) {
+    if (
+      this.listStyle === 'ordered'
+      && (this.data.meta as OrderedListItemMeta).counterType === undefined
+    ) {
       (this.data.meta as OrderedListItemMeta).counterType = 'numeric';
     }
 
@@ -301,84 +328,93 @@ export default class EditorjsList {
           this.listStyle = 'ordered';
         },
       },
-      {
-        label: this.api.i18n.t('Checklist'),
-        icon: IconChecklist,
-        closeOnActivate: true,
-        isActive: this.listStyle == 'checklist',
-        onActivate: () => {
-          this.listStyle = 'checklist';
-        },
-      },
+      // {
+      //   label: this.api.i18n.t('Checklist'),
+      //   icon: IconChecklist,
+      //   closeOnActivate: true,
+      //   isActive: this.listStyle == 'checklist',
+      //   onActivate: () => {
+      //     this.listStyle = 'checklist';
+      //   },
+      // },
     ];
 
-    if (this.listStyle === 'ordered') {
-      const startWithElement = renderToolboxInput(
-        (index: string) => this.changeStartWith(Number(index)),
-        {
-          value: String((this.data.meta as OrderedListItemMeta).start ?? 1),
-          placeholder: '',
-          attributes: {
-            required: 'true',
-          },
-          sanitize: input => stripNumbers(input),
-        });
+    // if (this.listStyle === 'ordered') {
+    //   const startWithElement = renderToolboxInput(
+    //     (index: string) => this.changeStartWith(Number(index)),
+    //     {
+    //       value: String((this.data.meta as OrderedListItemMeta).start ?? 1),
+    //       placeholder: '',
+    //       attributes: {
+    //         required: 'true',
+    //       },
+    //       sanitize: input => stripNumbers(input),
+    //     }
+    //   );
 
-      const orderedListTunes: MenuConfigItem[] = [
-        {
-          label: this.api.i18n.t('Start with'),
-          icon: IconStartWith,
-          children: {
-            items: [
-              {
-                element: startWithElement,
-                // @ts-expect-error ts(2820) can not use PopoverItem enum from editor.js types
-                type: 'html',
-              },
-            ],
-          },
-        },
-      ];
+    //   const orderedListTunes: MenuConfigItem[] = [
+    //     {
+    //       label: this.api.i18n.t('Start with'),
+    //       icon: IconStartWith,
+    //       children: {
+    //         items: [
+    //           {
+    //             element: startWithElement,
+    //             // @ts-expect-error ts(2820) can not use PopoverItem enum from editor.js types
+    //             type: 'html',
+    //           },
+    //         ],
+    //       },
+    //     },
+    //   ];
 
-      const orderedListCountersTunes: MenuConfigItem = {
-        label: this.api.i18n.t('Counter type'),
-        icon: OlCounterIconsMap.get((this.data.meta as OrderedListItemMeta).counterType!),
-        children: {
-          items: [],
-        },
-      };
+    //   const orderedListCountersTunes: MenuConfigItem = {
+    //     label: this.api.i18n.t('Counter type'),
+    //     icon: OlCounterIconsMap.get(
+    //       (this.data.meta as OrderedListItemMeta).counterType!
+    //     ),
+    //     children: {
+    //       items: [],
+    //     },
+    //   };
 
-      /**
-       * For each counter type in OlCounterType create toolbox item
-       */
-      OlCounterTypesMap.forEach((_, counterType: string) => {
-        const counterTypeValue = OlCounterTypesMap.get(counterType)! as OlCounterType;
+    //   /**
+    //    * For each counter type in OlCounterType create toolbox item
+    //    */
+    //   OlCounterTypesMap.forEach((_, counterType: string) => {
+    //     const counterTypeValue = OlCounterTypesMap.get(
+    //       counterType
+    //     )! as OlCounterType;
 
-        if (!this.defaultCounterTypes.includes(counterTypeValue)) {
-          return;
-        }
+    //     if (!this.defaultCounterTypes.includes(counterTypeValue)) {
+    //       return;
+    //     }
 
-        orderedListCountersTunes.children.items!.push({
-          title: this.api.i18n.t(counterType),
-          icon: OlCounterIconsMap.get(counterTypeValue),
-          isActive: (this.data.meta as OrderedListItemMeta).counterType === OlCounterTypesMap.get(counterType),
-          closeOnActivate: true,
-          onActivate: () => {
-            this.changeCounters(OlCounterTypesMap.get(counterType) as OlCounterType);
-          },
-        });
-      });
+    //     orderedListCountersTunes.children.items!.push({
+    //       title: this.api.i18n.t(counterType),
+    //       icon: OlCounterIconsMap.get(counterTypeValue),
+    //       isActive:
+    //         (this.data.meta as OrderedListItemMeta).counterType
+    //         === OlCounterTypesMap.get(counterType),
+    //       closeOnActivate: true,
+    //       onActivate: () => {
+    //         this.changeCounters(
+    //           OlCounterTypesMap.get(counterType) as OlCounterType
+    //         );
+    //       },
+    //     });
+    //   });
 
-      /**
-       * Dont show Counter type tune if there is no valid counter types
-       */
-      if (orderedListCountersTunes.children.items!.length > 1) {
-        orderedListTunes.push(orderedListCountersTunes);
-      }
+    //   /**
+    //    * Dont show Counter type tune if there is no valid counter types
+    //    */
+    //   if (orderedListCountersTunes.children.items!.length > 1) {
+    //     orderedListTunes.push(orderedListCountersTunes);
+    //   }
 
-      // @ts-expect-error ts(2820) can not use PopoverItem enum from editor.js types
-      defaultTunes.push({ type: 'separator' }, ...orderedListTunes);
-    }
+    //   // @ts-expect-error ts(2820) can not use PopoverItem enum from editor.js types
+    //   defaultTunes.push({ type: 'separator' }, ...orderedListTunes);
+    // }
 
     return defaultTunes;
   }
@@ -438,40 +474,43 @@ export default class EditorjsList {
   private changeTabulatorByStyle(): void {
     switch (this.listStyle) {
       case 'ordered':
-        this.list = new ListTabulator<OrderedListRenderer>({
-          data: this.data,
-          readOnly: this.readOnly,
-          api: this.api,
-          config: this.config,
-          block: this.block,
-        },
-        new OrderedListRenderer(this.readOnly, this.config)
+        this.list = new ListTabulator<OrderedListRenderer>(
+          {
+            data: this.data,
+            readOnly: this.readOnly,
+            api: this.api,
+            config: this.config,
+            block: this.block,
+          },
+          new OrderedListRenderer(this.readOnly, this.config)
         );
 
         break;
 
       case 'unordered':
-        this.list = new ListTabulator<UnorderedListRenderer>({
-          data: this.data,
-          readOnly: this.readOnly,
-          api: this.api,
-          config: this.config,
-          block: this.block,
-        },
-        new UnorderedListRenderer(this.readOnly, this.config)
+        this.list = new ListTabulator<UnorderedListRenderer>(
+          {
+            data: this.data,
+            readOnly: this.readOnly,
+            api: this.api,
+            config: this.config,
+            block: this.block,
+          },
+          new UnorderedListRenderer(this.readOnly, this.config)
         );
 
         break;
 
       case 'checklist':
-        this.list = new ListTabulator<CheckListRenderer>({
-          data: this.data,
-          readOnly: this.readOnly,
-          api: this.api,
-          config: this.config,
-          block: this.block,
-        },
-        new CheckListRenderer(this.readOnly, this.config)
+        this.list = new ListTabulator<CheckListRenderer>(
+          {
+            data: this.data,
+            readOnly: this.readOnly,
+            api: this.api,
+            config: this.config,
+            block: this.block,
+          },
+          new CheckListRenderer(this.readOnly, this.config)
         );
 
         break;

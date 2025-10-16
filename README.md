@@ -1,4 +1,8 @@
-![](https://badgen.net/badge/Editor.js/v2.19.2/blue)
+# This is a fork
+
+This is a fork of [https://github.com/editor-js/list](https://github.com/editor-js/list).
+
+Publishing to npm is currently manual by running `yarn pub` locally.
 
 # Editorjs List Tool
 
@@ -55,24 +59,25 @@ var editor = EditorJS({
   },
 });
 ```
+
 > [!IMPORTANT]
 > Note that in List 2.0 class name changed from `List` to `EditorjsList`.
 
 ## Config Params
 
-| Field        | Type     | Description                                                    |
-|--------------|----------|----------------------------------------------------------------|
-| defaultStyle | `string` | default list style: `ordered`, `unordered` or `checklist`, default is `unordered` |
-| maxLevel     | `number` | maximum level of the list nesting, could be set to `1` to disable nesting, unlimited by default |
+| Field        | Type       | Description                                                                                                                                                                |
+| ------------ | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| defaultStyle | `string`   | default list style: `ordered`, `unordered` or `checklist`, default is `unordered`                                                                                          |
+| maxLevel     | `number`   | maximum level of the list nesting, could be set to `1` to disable nesting, unlimited by default                                                                            |
 | counterTypes | `string[]` | specifies which counter types should be shown in the ordered list style, could be set to `['numeric','upper-roman']`, default is `undefined` which shows all counter types |
 
 ## Output data
 
-| Field             | Type      |  Description                                                                                                              |
-| ----------------- | --------- | ------------------------------------------------------------------------------------------------------------------------- |
-| style             | `string`  |  list will be rendered with this style: `ordered`, `unordered` or `checklist`, default is `defaultStyle` from tool config |
-| meta              | `ItemMeta`|  Item meta based on the list style                                                                                         |
-| items             | `Item[]`  |  the array of list's items                                                                                                |
+| Field | Type       | Description                                                                                                              |
+| ----- | ---------- | ------------------------------------------------------------------------------------------------------------------------ |
+| style | `string`   | list will be rendered with this style: `ordered`, `unordered` or `checklist`, default is `defaultStyle` from tool config |
+| meta  | `ItemMeta` | Item meta based on the list style                                                                                        |
+| items | `Item[]`   | the array of list's items                                                                                                |
 
 Object `Item`:
 
@@ -84,24 +89,25 @@ Object `Item`:
 
 Object `ItemMeta` for Checklist:
 
-| Field   | Type      | Description               |
-| ------- | --------- | ------------------------- |
-| checked | `boolean` | state of the checkbox     |
+| Field   | Type      | Description           |
+| ------- | --------- | --------------------- |
+| checked | `boolean` | state of the checkbox |
 
 Object `ItemMeta` for Ordered list
 
-| Field   | Type      | Description               |
-| ------- | --------- | ------------------------- |
-| start   | `number`  | number for list to start with, default is 1 |
-| counterType | `string`  | counter type for list, it could be `numeric`, `lower-roman`, `upper-roman`, `lower-alpha`, `upper-alpha`, default is `numeric` |
-
+| Field       | Type     | Description                                                                                                                    |
+| ----------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| start       | `number` | number for list to start with, default is 1                                                                                    |
+| counterType | `string` | counter type for list, it could be `numeric`, `lower-roman`, `upper-roman`, `lower-alpha`, `upper-alpha`, default is `numeric` |
 
 Object `ItemMeta` for Unordered list would be empty.
 
 ## Localisation
+
 If you want to use your language for toolbox items, you can pass i18n dictionary to the editorjs instance below the tools `block`:
+
 ```javascript
-i18n: { 
+i18n: {
   messages: {
     "toolNames": {
       "Ordered List": "Nummerierte Liste",
@@ -120,6 +126,7 @@ i18n: {
 ```
 
 ### Other supported keys for `tools.List`
+
 - `Start with`
 - `Counter type`
 - `Numeric`
@@ -129,6 +136,7 @@ i18n: {
 - `Upper Alpha`
 
 ## Example of the content for `Unordered List`
+
 ```json
 {
   "type" : "list",
@@ -152,6 +160,7 @@ i18n: {
 ```
 
 ## Example of the content for `Ordered List`
+
 ```json
 {
   "type" : "list",
@@ -179,6 +188,7 @@ i18n: {
 ```
 
 ## Example of the content for `Checklist`
+
 ```json
 {
   "type" : "list",

@@ -4,12 +4,21 @@ import type { ListConfig, ListData, ListDataStyle } from '../types/ListParams';
 import type { ListItem } from '../types/ListParams';
 import type { ItemElement, ItemChildWrapperElement } from '../types/Elements';
 import { isHtmlElement } from '../utils/type-guards';
-import { getContenteditableSlice, getCaretNodeAndOffset, isCaretAtStartOfInput } from '@editorjs/caret';
+import {
+  getContenteditableSlice,
+  getCaretNodeAndOffset,
+  isCaretAtStartOfInput
+} from '@editorjs/caret';
 import { DefaultListCssClasses } from '../ListRenderer';
 import type { PasteEvent } from '../types';
 import type { API, BlockAPI, PasteConfig } from '@editorjs/editorjs';
 import type { ListParams } from '..';
-import type { ChecklistItemMeta, ItemMeta, OrderedListItemMeta, UnorderedListItemMeta } from '../types/ItemMeta';
+import type {
+  ChecklistItemMeta,
+  ItemMeta,
+  OrderedListItemMeta,
+  UnorderedListItemMeta
+} from '../types/ItemMeta';
 import type { ListRenderer } from '../types/ListRenderer';
 import { getSiblings } from '../utils/getSiblings';
 import { getChildItems } from '../utils/getChildItems';
@@ -105,7 +114,10 @@ export default class ListTabulator<Renderer extends ListRenderer> {
     let levelCounter = 0;
 
     while (parentNode !== null && parentNode !== this.listWrapper) {
-      if (isHtmlElement(parentNode) && parentNode.classList.contains(DefaultListCssClasses.item)) {
+      if (
+        isHtmlElement(parentNode)
+        && parentNode.classList.contains(DefaultListCssClasses.item)
+      ) {
         levelCounter += 1;
       }
 
@@ -127,7 +139,10 @@ export default class ListTabulator<Renderer extends ListRenderer> {
    * @param params.readOnly - read-only mode flag
    * @param renderer - renderer instance initialized in tool class
    */
-  constructor({ data, config, api, readOnly, block }: ListParams, renderer: Renderer) {
+  constructor(
+    { data, config, api, readOnly, block }: ListParams,
+    renderer: Renderer
+  ) {
     this.config = config;
     this.data = data as ListData;
     this.readOnly = readOnly;
@@ -167,7 +182,7 @@ export default class ListTabulator<Renderer extends ListRenderer> {
         (event) => {
           switch (event.key) {
             case 'Enter':
-              if (!event.shiftKey) {
+              if (!event.shiftKey && !event.metaKey && !event.ctrlKey) {
                 this.enterPressed(event);
               }
               break;
@@ -197,7 +212,10 @@ export default class ListTabulator<Renderer extends ListRenderer> {
     /**
      * Set counterType value from initial data
      */
-    if ('counterType' in this.data.meta && this.data.meta.counterType !== undefined) {
+    if (
+      'counterType' in this.data.meta
+      && this.data.meta.counterType !== undefined
+    ) {
       this.changeCounters(this.data.meta.counterType);
     }
 
@@ -274,10 +292,13 @@ export default class ListTabulator<Renderer extends ListRenderer> {
     /**
      * Get list of all levels children of the previous item
      */
-    const items = this.block.holder.querySelectorAll<ItemElement>(`.${DefaultListCssClasses.item}`);
+    const items = this.block.holder.querySelectorAll<ItemElement>(
+      `.${DefaultListCssClasses.item}`
+    );
 
     const deepestBlockItem = items[items.length - 1];
-    const deepestBlockItemContentElement = getItemContentElement(deepestBlockItem);
+    const deepestBlockItemContentElement
+      = getItemContentElement(deepestBlockItem);
 
     if (deepestBlockItem === null || deepestBlockItemContentElement === null) {
       return;
@@ -286,7 +307,10 @@ export default class ListTabulator<Renderer extends ListRenderer> {
     /**
      * Insert trailing html to the deepest block item content
      */
-    deepestBlockItemContentElement.insertAdjacentHTML('beforeend', data.items[0].content);
+    deepestBlockItemContentElement.insertAdjacentHTML(
+      'beforeend',
+      data.items[0].content
+    );
 
     if (this.listWrapper === undefined) {
       return;
@@ -306,7 +330,8 @@ export default class ListTabulator<Renderer extends ListRenderer> {
     /**
      * Get child items wrapper of the last item
      */
-    let lastFirstLevelItemChildWrapper = getItemChildWrapper(lastFirstLevelItem);
+    let lastFirstLevelItemChildWrapper
+      = getItemChildWrapper(lastFirstLevelItem);
 
     /**
      * Get first item of the list to be merged with current one
@@ -467,7 +492,8 @@ export default class ListTabulator<Renderer extends ListRenderer> {
       return;
     }
 
-    const isEmpty = this.renderer?.getItemContent(currentItem).trim().length === 0;
+    const isEmpty
+      = this.renderer?.getItemContent(currentItem).trim().length === 0;
     const isFirstLevelItem = currentItem.parentNode === this.listWrapper;
     const isFirstItem = currentItem.previousElementSibling === null;
 
@@ -550,7 +576,10 @@ export default class ListTabulator<Renderer extends ListRenderer> {
     /**
      * First item of the list should become paragraph on backspace
      */
-    if (currentItem.parentNode === this.listWrapper && currentItem.previousElementSibling === null) {
+    if (
+      currentItem.parentNode === this.listWrapper
+      && currentItem.previousElementSibling === null
+    ) {
       /**
        * If current item is first item of the list, then we need to merge first item content with previous block
        */
@@ -607,7 +636,9 @@ export default class ListTabulator<Renderer extends ListRenderer> {
       return;
     }
 
-    const parentItem = item.parentNode.closest<ItemElement>(`.${DefaultListCssClasses.item}`);
+    const parentItem = item.parentNode.closest<ItemElement>(
+      `.${DefaultListCssClasses.item}`
+    );
 
     /**
      * If item in the first-level list then no need to do anything
@@ -690,7 +721,10 @@ export default class ListTabulator<Renderer extends ListRenderer> {
      * If item is first item of the list, we should just get out of the list
      * It means, that we would not split on two lists, if one of them would be empty
      */
-    if (item.previousElementSibling === null && item.parentNode === this.listWrapper) {
+    if (
+      item.previousElementSibling === null
+      && item.parentNode === this.listWrapper
+    ) {
       this.convertItemToDefaultBlock(currentBlockIndex);
 
       return;
@@ -719,12 +753,18 @@ export default class ListTabulator<Renderer extends ListRenderer> {
 
     const newListContent = this.save(newListWrapper);
 
-    (newListContent.meta as OrderedListItemMeta).start = this.data.style == 'ordered' ? 1 : undefined;
+    (newListContent.meta as OrderedListItemMeta).start
+      = this.data.style == 'ordered' ? 1 : undefined;
 
     /**
      * Insert separated list with trailing items
      */
-    this.api.blocks.insert(currentBlock?.name, newListContent, this.config, currentBlockIndex + 1);
+    this.api.blocks.insert(
+      currentBlock?.name,
+      newListContent,
+      this.config,
+      currentBlockIndex + 1
+    );
 
     /**
      * Insert paragraph
@@ -762,7 +802,13 @@ export default class ListTabulator<Renderer extends ListRenderer> {
        * On other Enters, get content from caret till the end of the block
        * And move it to the new item
        */
-      endingHTML = getContenteditableSlice(currentItemContent, currentNode, offset, 'right', true);
+      endingHTML = getContenteditableSlice(
+        currentItemContent,
+        currentNode,
+        offset,
+        'right',
+        true
+      );
     }
 
     const itemChildren = getItemChildWrapper(currentItem);
@@ -807,7 +853,9 @@ export default class ListTabulator<Renderer extends ListRenderer> {
       return;
     }
 
-    const parentItem = currentItemParentNode.closest<ItemElement>(`.${DefaultListCssClasses.item}`);
+    const parentItem = currentItemParentNode.closest<ItemElement>(
+      `.${DefaultListCssClasses.item}`
+    );
 
     /**
      * Check that current item has any previous siblings to be merged with
@@ -842,7 +890,10 @@ export default class ListTabulator<Renderer extends ListRenderer> {
       /**
        * Target item would be deepest child of the previous item or previous item itself
        */
-      if (childrenOfPreviousItem.length !== 0 && childrenOfPreviousItem.length !== 0) {
+      if (
+        childrenOfPreviousItem.length !== 0
+        && childrenOfPreviousItem.length !== 0
+      ) {
         targetItem = childrenOfPreviousItem[childrenOfPreviousItem.length - 1];
       } else {
         targetItem = previousItem;
@@ -883,7 +934,10 @@ export default class ListTabulator<Renderer extends ListRenderer> {
     /**
      * Update target item content by merging with current item html content
      */
-    targetItemContentElement.insertAdjacentHTML('beforeend', currentItemContent);
+    targetItemContentElement.insertAdjacentHTML(
+      'beforeend',
+      currentItemContent
+    );
 
     /**
      * Get child list of the currentItem
@@ -916,7 +970,9 @@ export default class ListTabulator<Renderer extends ListRenderer> {
      */
     const targetForChildItems = previousItem ? previousItem : parentItem!;
 
-    const targetChildWrapper = getItemChildWrapper(targetForChildItems) ?? this.renderer.renderWrapper(false);
+    const targetChildWrapper
+      = getItemChildWrapper(targetForChildItems)
+      ?? this.renderer.renderWrapper(false);
 
     /**
      * Add child current item children to the target childWrapper
@@ -974,7 +1030,10 @@ export default class ListTabulator<Renderer extends ListRenderer> {
       /**
        * Check that current item is not in the maximum nesting level
        */
-      if (currentItemLevel !== null && currentItemLevel === this.config.maxLevel) {
+      if (
+        currentItemLevel !== null
+        && currentItemLevel === this.config.maxLevel
+      ) {
         return;
       }
     }
@@ -1056,12 +1115,16 @@ export default class ListTabulator<Renderer extends ListRenderer> {
    * @param newBloxkIndex - optional parameter represents index, where would be inseted default block
    * @param removeList - optional parameter, that represents condition, if List should be removed
    */
-  private convertItemToDefaultBlock(newBloxkIndex?: number, removeList?: boolean): void {
+  private convertItemToDefaultBlock(
+    newBloxkIndex?: number,
+    removeList?: boolean
+  ): void {
     let newBlock;
 
     const currentItem = this.currentItem;
 
-    const currentItemContent = currentItem !== null ? this.renderer.getItemContent(currentItem) : '';
+    const currentItemContent
+      = currentItem !== null ? this.renderer.getItemContent(currentItem) : '';
 
     if (removeList === true) {
       this.api.blocks.delete();
@@ -1071,7 +1134,12 @@ export default class ListTabulator<Renderer extends ListRenderer> {
      * Check that index have passed
      */
     if (newBloxkIndex !== undefined) {
-      newBlock = this.api.blocks.insert(undefined, { text: currentItemContent }, undefined, newBloxkIndex);
+      newBlock = this.api.blocks.insert(
+        undefined,
+        { text: currentItemContent },
+        undefined,
+        newBloxkIndex
+      );
     } else {
       newBlock = this.api.blocks.insert();
     }
@@ -1135,18 +1203,30 @@ export default class ListTabulator<Renderer extends ListRenderer> {
    * @param meta - meta used in list item rendering
    * @returns html element of the rendered item
    */
-  private renderItem(itemContent: ListItem['content'], meta?: ListItem['meta']): ItemElement {
+  private renderItem(
+    itemContent: ListItem['content'],
+    meta?: ListItem['meta']
+  ): ItemElement {
     const itemMeta = meta ?? this.renderer.composeDefaultMeta();
 
     switch (true) {
       case this.renderer instanceof OrderedListRenderer:
-        return this.renderer.renderItem(itemContent, itemMeta as OrderedListItemMeta);
+        return this.renderer.renderItem(
+          itemContent,
+          itemMeta as OrderedListItemMeta
+        );
 
       case this.renderer instanceof UnorderedListRenderer:
-        return this.renderer.renderItem(itemContent, itemMeta as UnorderedListItemMeta);
+        return this.renderer.renderItem(
+          itemContent,
+          itemMeta as UnorderedListItemMeta
+        );
 
       default:
-        return this.renderer.renderItem(itemContent, itemMeta as ChecklistItemMeta);
+        return this.renderer.renderItem(
+          itemContent,
+          itemMeta as ChecklistItemMeta
+        );
     }
   }
 
